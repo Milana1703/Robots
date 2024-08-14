@@ -1,5 +1,7 @@
 package log;
 
+// Enum — класс, предназначенный для создания ограниченного круга значений.
+
 public enum LogLevel
 {
     Trace(0),
@@ -9,15 +11,13 @@ public enum LogLevel
     Error(4),
     Fatal(5);
 
-    private int m_iLevel;
+    private final int level;
 
-    private LogLevel(int iLevel)
-    {
-        m_iLevel = iLevel;
+    private LogLevel(int iLevel) {
+        this.level = iLevel;
     }
 
-    public int level()
-    {
-        return m_iLevel;
+    public int getLevel() {
+        return level;
     }
 }
