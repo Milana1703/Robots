@@ -15,23 +15,17 @@ import javax.swing.JPanel;
 
 public class GameVisualizer extends JPanel
 {
-    private final Timer m_timer = initTimer();
+    private final Timer m_timer = new Timer("events generator", true);
     
-    private static Timer initTimer() 
-    {
-        Timer timer = new Timer("events generator", true);
-        return timer;
-    }
-    
-    private volatile double m_robotPositionX = 100;
-    private volatile double m_robotPositionY = 100; 
-    private volatile double m_robotDirection = 0; 
+    private double m_robotPositionX = 100;
+    private double m_robotPositionY = 100;
+    private double m_robotDirection = 0;
 
-    private volatile int m_targetPositionX = 150;
-    private volatile int m_targetPositionY = 100;
+    private int m_targetPositionX = 150;
+    private int m_targetPositionY = 100;
     
-    private static final double maxVelocity = 0.1; 
-    private static final double maxAngularVelocity = 0.001; 
+    private static final double maxVelocity = 0.1;
+    private static final double maxAngularVelocity = 0.001;
     
     public GameVisualizer() 
     {
@@ -56,19 +50,14 @@ public class GameVisualizer extends JPanel
             @Override
             public void mouseClicked(MouseEvent e)
             {
-                setTargetPosition(e.getPoint());
+                m_targetPositionX = e.getPoint().x;
+                m_targetPositionY = e.getPoint().y;
                 repaint();
             }
         });
         setDoubleBuffered(true);
     }
 
-    protected void setTargetPosition(Point p)
-    {
-        m_targetPositionX = p.x;
-        m_targetPositionY = p.y;
-    }
-    
     protected void onRedrawEvent()
     {
         EventQueue.invokeLater(this::repaint);
@@ -125,14 +114,14 @@ public class GameVisualizer extends JPanel
     {
         velocity = applyLimits(velocity, 0, maxVelocity);
         angularVelocity = applyLimits(angularVelocity, -maxAngularVelocity, maxAngularVelocity);
-        double newX = m_robotPositionX + velocity / angularVelocity * 
+        double newX = m_robotPositionX + velocity / angularVelocity *
             (Math.sin(m_robotDirection  + angularVelocity * duration) -
                 Math.sin(m_robotDirection));
         if (!Double.isFinite(newX))
         {
             newX = m_robotPositionX + velocity * duration * Math.cos(m_robotDirection);
         }
-        double newY = m_robotPositionY - velocity / angularVelocity * 
+        double newY = m_robotPositionY - velocity / angularVelocity *
             (Math.cos(m_robotDirection  + angularVelocity * duration) -
                 Math.cos(m_robotDirection));
         if (!Double.isFinite(newY))
