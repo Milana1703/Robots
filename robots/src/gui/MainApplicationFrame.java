@@ -1,7 +1,6 @@
 package gui;
 
-import java.awt.Dimension;
-import java.awt.Toolkit;
+import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -85,7 +84,7 @@ public class MainApplicationFrame extends JFrame {
     private JMenu getExitMenu() {
         JMenu exitMenu = new JMenu("Выход");
         JMenuItem exitItem = new JMenuItem("Нет блин вход (да выход выход, точно)");
-        exitItem.addActionListener(event -> createConfirmExitPane());
+        exitItem.addActionListener(event -> dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING)));
         exitMenu.add(exitItem);
         return exitMenu;
     }
