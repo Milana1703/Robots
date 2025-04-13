@@ -3,6 +3,8 @@ package gui;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import javax.swing.*;
 
@@ -29,7 +31,13 @@ public class MainApplicationFrame extends JFrame {
         addWindow(gameWindow);
 
         setJMenuBar(generateMenuBar());
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                createConfirmExitPane();
+            }
+        });
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
     }
 
     protected LogWindow createLogWindow() {
@@ -77,19 +85,21 @@ public class MainApplicationFrame extends JFrame {
     private JMenu getExitMenu() {
         JMenu exitMenu = new JMenu("Выход");
         JMenuItem exitItem = new JMenuItem("Нет блин вход (да выход выход, точно)");
-        exitItem.addActionListener(event -> {
-            int result = JOptionPane.showConfirmDialog(
-                    this,
-                    "Ты точно хочешь отсюда уйти? \uD83D\uDC49\uD83D\uDC48",
-                    "Выход",
-                    JOptionPane.YES_NO_OPTION
-            );
-            if (result == 0) {
-                System.exit(1);
-            }
-        });
+        exitItem.addActionListener(event -> createConfirmExitPane());
         exitMenu.add(exitItem);
         return exitMenu;
+    }
+
+    private void createConfirmExitPane() {
+        int result = JOptionPane.showConfirmDialog(
+                this,
+                "Ты точно хочешь отсюда уйти? \uD83D\uDC49\uD83D\uDC48",
+                "Выход",
+                JOptionPane.YES_NO_OPTION
+        );
+        if (result == 0) {
+            System.exit(0);
+        }
     }
 
     private JMenu getLookAndFeelMenu() {
