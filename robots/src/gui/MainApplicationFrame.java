@@ -4,6 +4,7 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.*;
 
 import javax.swing.*;
 
@@ -11,22 +12,24 @@ import log.Logger;
 
 public class MainApplicationFrame extends JFrame {
     private final JDesktopPane desktopPane = new JDesktopPane();
+    private static final String saveFileName = "main-frame.txt";
+    private LogWindow logWindow;
+    private GameWindow gameWindow;
 
     public MainApplicationFrame() {
         int inset = 50;
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        setBounds(inset, inset,
+        Rectangle defaultBounds = new Rectangle(inset, inset,
                 screenSize.width - inset * 2,
                 screenSize.height - inset * 2);
-
+        SaveUtilities.restoreState(this, saveFileName, defaultBounds);
         setContentPane(desktopPane);
 
 
-        LogWindow logWindow = createLogWindow();
+        logWindow = createLogWindow();
         addWindow(logWindow);
 
-        GameWindow gameWindow = new GameWindow();
-        gameWindow.setSize(400, 400);
+        gameWindow = new GameWindow();
         addWindow(gameWindow);
 
         setJMenuBar(generateMenuBar());
@@ -39,17 +42,13 @@ public class MainApplicationFrame extends JFrame {
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
     }
 
-    protected LogWindow createLogWindow() {
+    private LogWindow createLogWindow() {
         LogWindow logWindow = new LogWindow(Logger.getDefaultLogSource());
-        logWindow.setLocation(10, 10);
-        logWindow.setSize(300, 800);
-        setMinimumSize(logWindow.getSize());
-        logWindow.pack();
         Logger.debug("Протокол работает");
         return logWindow;
     }
 
-    protected void addWindow(JInternalFrame frame) {
+    private void addWindow(JInternalFrame frame) {
         desktopPane.add(frame);
         frame.setVisible(true);
     }
@@ -97,6 +96,9 @@ public class MainApplicationFrame extends JFrame {
                 JOptionPane.YES_NO_OPTION
         );
         if (result == 0) {
+            SaveUtilities.saveState(this, saveFileName);
+            SaveUtilities.saveState(logWindow, LogWindow.saveFileName);
+            SaveUtilities.saveState(gameWindow, GameWindow.saveFileName);
             System.exit(0);
         }
     }

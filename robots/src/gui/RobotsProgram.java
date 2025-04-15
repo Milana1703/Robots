@@ -22,8 +22,6 @@ public class RobotsProgram
       // метод invokeLater обеспечивает потокобезопасность обновления GUI
       SwingUtilities.invokeLater(() -> {
         MainApplicationFrame frame = new MainApplicationFrame();
-        frame.pack(); // подстраивает размер окошка под компоненты
         frame.setVisible(true);
-        frame.setExtendedState(Frame.MAXIMIZED_BOTH);
       });
     }}
